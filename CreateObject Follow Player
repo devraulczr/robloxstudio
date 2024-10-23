@@ -1,0 +1,43 @@
+
+function giveBook(plr)
+	local Data = plr:WaitForChild("Data")
+	local Livro = Data:WaitForChild("Livro")
+	--player stuff here
+	if Livro.Value == "Wather" then
+		local Part = game.ReplicatedStorage.Livros.Wather:Clone()
+		Part.Parent = plr.Character.Magias
+
+		local BodyGiro = Instance.new("BodyGyro",Part)
+		BodyGiro.MaxTorque = Vector3.new(math.huge,math.huge,math.huge)
+
+		local BodyPos = Instance.new("BodyPosition",Part)
+		BodyPos.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+		print("Criado")
+		while wait() do
+			BodyPos.Position = plr.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(2,2,3)
+			BodyGiro.CFrame = plr.Character:WaitForChild("HumanoidRootPart").CFrame
+		end
+	end
+	if Livro.Value == "Am" then
+		local Part = game.ReplicatedStorage.Livros.Am:Clone()
+		Part.Parent = plr.Character.Magias
+
+		local BodyGiro = Instance.new("BodyGyro",Part)
+		BodyGiro.MaxTorque = Vector3.new(math.huge,math.huge,math.huge)
+
+		local BodyPos = Instance.new("BodyPosition",Part)
+		BodyPos.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+		print("Criado")
+		while wait() do
+			BodyPos.Position = plr.Character:WaitForChild("HumanoidRootPart").Position + Vector3.new(2,2,3)
+			BodyGiro.CFrame = plr.Character:WaitForChild("HumanoidRootPart").CFrame + Vector3.new(0,90,0)
+		end
+	end
+end
+
+game.Players.PlayerAdded:Connect(function(plr)
+	print("Player Added "..plr.Name)
+	plr.CharacterAdded:Connect(function(char)
+		giveBook(plr)
+	end)
+end)
