@@ -1,0 +1,131 @@
+local inventoryEvent = game.ReplicatedStorage.Remotes.InventoryEvent
+
+game.Players.PlayerAdded:Connect(function(plr)
+	-- Sword Inventory
+
+	local s_data = plr:WaitForChild('s_data')
+	for i, s in pairs(s_data:GetChildren()) do
+		if s.Value >= 1 then
+			local iGui = plr.PlayerGui:WaitForChild('InventoryGui')
+			local template = iGui.templates
+			local images = game.ReplicatedStorage.images
+			local clone = template.template:Clone()
+			clone.Name = s.Name
+			clone.own.Value = true
+			clone.count.Text = s.Value
+			clone.Visible = true
+			clone.nome.Value = s.Name
+			clone.Parent = iGui.InventoryFrame.iScroll
+			for i,v in pairs(images:GetChildren()) do
+				if v.Name == s.Name then
+					clone.Image = v.Image
+				end
+			end
+		end
+	end
+
+	-- Fragment Inventory
+
+	local f_data = plr:WaitForChild('f_data')
+	for i,f in pairs(f_data:GetChildren()) do
+		if f.Value >= 1 then
+			local iGui = plr.PlayerGui.InventoryGui
+			local template = iGui.templates
+			local clone = template.fTemplate:Clone()
+			clone.Name = f.Name
+			clone.count.Text = f.Value
+			clone.Visible = true
+			clone.Parent = iGui.InventoryFrame.fScroll
+			clone.own.Value = true
+			clone.nome.Value = f.Name
+			local fimages = game.ReplicatedStorage.fimages
+			for i,v in pairs(fimages:GetChildren()) do
+				if v.Name == f.Name then
+					clone.Image = v.Image
+				end
+			end
+		end
+	end
+end)
+
+inventoryEvent.OnServerEvent:Connect(function(plr)
+	local s_data = plr:WaitForChild('s_data')
+	local f_data = plr:WaitForChild('f_data')
+
+	-- Atualizar Knife Inventory
+	for i, s in pairs(s_data:GetChildren()) do
+		local plrGui = plr.PlayerGui
+		local swords = plrGui.InventoryGui.InventoryFrame.iScroll
+		local itemFound = false
+
+		for i, sr in pairs(swords:GetChildren()) do
+			if sr.Name == s.Name then
+				if s.Value == 0 then
+					sr:Destroy()
+				else
+					sr.own.Value = true
+					sr.count.Text = s.Value
+					sr.Visible = true
+				end
+				itemFound = true
+				break
+			end
+		end
+
+		if not itemFound and s.Value >= 1 then
+			local iGui = plr.PlayerGui.InventoryGui
+			local template = iGui.templates
+			local images = game.ReplicatedStorage.images
+			local clone = template.template:Clone()
+			clone.Name = s.Name
+			clone.count.Text = s.Value
+			clone.own.Value = true
+			clone.Visible = true
+			clone.nome.Value = s.Name
+			clone.Parent = iGui.InventoryFrame.iScroll
+			for i,v in pairs(images:GetChildren()) do
+				if v.Name == s.Name then
+					clone.Image = v.Image
+				end
+			end
+		end
+	end
+
+	-- Atualizar Fragment Inventory
+	for i, f in pairs(f_data:GetChildren()) do
+		local plrGui = plr.PlayerGui
+		local fragments = plrGui.InventoryGui.InventoryFrame.fScroll
+		local itemFound = false
+
+		for i, fr in pairs(fragments:GetChildren()) do
+			if fr.Name == f.Name then
+				if f.Value == 0 then
+					fr:Destroy()
+				else
+					fr.own.Value = true
+					fr.count.Text = f.Value
+					fr.Visible = true
+				end
+				itemFound = true
+				break
+			end
+		end
+
+		if not itemFound and f.Value >= 1 then
+			local iGui = plr.PlayerGui.InventoryGui
+			local template = iGui.templates
+			local clone = template.fTemplate:Clone()
+			clone.Name = f.Name
+			clone.count.Text = f.Value
+			clone.own.Value = true
+			clone.Visible = true
+			clone.Parent = iGui.InventoryFrame.fScroll
+			local fimages = game.ReplicatedStorage.fimages
+			for i,v in pairs(fimages:GetChildren()) do
+				if v.Name == f.Name then
+					clone.Image = v.Image
+				end
+			end
+		end
+	end
+end)
