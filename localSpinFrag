@@ -1,0 +1,82 @@
+wait(1)
+local player = game.Players.LocalPlayer
+local playerCharacter = player.Character or player.CharacterAdded:Wait()
+local UserInputService = game:GetService("UserInputService")
+local machineValue
+local touchingMachine = false 
+
+local function onTouch(otherPart)
+	if otherPart:IsA("Part") then
+		machineValue = otherPart:FindFirstChild("MACHINE")
+		if machineValue and machineValue:IsA("StringValue") then
+			touchingMachine = true
+			print("MACHINE encontrado: ", machineValue.Value)
+		else
+			print("MACHINE não encontrado ou não é um StringValue")
+		end
+	end
+end
+
+local function onTouchEnded(otherPart)
+	if otherPart:IsA("Part") then
+		machineValue = otherPart:FindFirstChild("MACHINE")
+		if machineValue and machineValue:IsA("StringValue") then
+			touchingMachine = false
+		end
+	end
+end
+
+
+local function setupTouch()
+	if playerCharacter:FindFirstChild("HumanoidRootPart") then
+		local rootPart = playerCharacter.HumanoidRootPart
+
+		rootPart.Touched:Connect(onTouch)
+		rootPart.TouchEnded:Connect(onTouchEnded)
+	end
+end
+
+setupTouch() 
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if not gameProcessed and touchingMachine then
+		if input.UserInputType == Enum.UserInputType.Keyboard then
+			if input.KeyCode == Enum.KeyCode.E and machineValue then
+				game.ReplicatedStorage.Remotes.rollFrag.roll:FireServer(machineValue.Value)
+			end
+		end
+	end
+end)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if not gameProcessed and touchingMachine then
+		if input.UserInputType == Enum.UserInputType.Keyboard then
+			if input.KeyCode == Enum.KeyCode.R and machineValue then
+				game.ReplicatedStorage.Remotes.rollFrag.roll3:FireServer(machineValue.Value)
+			end
+		end
+	end
+end)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if not gameProcessed and touchingMachine then
+		if input.UserInputType == Enum.UserInputType.Keyboard then
+			if input.KeyCode == Enum.KeyCode.T and machineValue then
+				if player.PlayerGui.rollReward.recentRoll.Value == false then
+					game.ReplicatedStorage.Remotes.RollControl:FireServer(true)
+					game.ReplicatedStorage.Remotes.rollFrag.roolAuto:FireServer(machineValue.Value)
+				else
+					local CoreGui = game:GetService("StarterGui")
+
+					CoreGui:SetCore("SendNotification", {
+						Title = "Aguarde!";
+						Text = "Aguarde Para Girar Denovo";
+						Duration = 3;
+						Button1 = "OK";
+					})
+
+				end
+			end
+		end
+	end
+end)
